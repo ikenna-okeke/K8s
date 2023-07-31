@@ -1,0 +1,16 @@
+apiVersion: v1
+data:
+  CURRENCY_EXCHANGE_SERVICE_HOST: http://currencyy-exchange
+kind: ConfigMap
+metadata:
+  name: currency-conversion-config-map
+  namespace: default
+#kubectl decribe configMap NAME:
+
+#to use the vale of the configMap, go into the yaml file you want to use it in and run
+# env:
+#   - name: CURRENCY_EXCHANGE_SERVICE_HOST
+#     valueFrom:
+#       configMapKeyRef:
+#         key: CURRENCY_EXCHANGE_SERVICE_HOST
+#         name: currency-conversion-config-map

@@ -1,0 +1,56 @@
+apiVersion: extension/v1beta1 #maks
+kind: Deployment
+metadata:
+  labels: #####
+    app: hello-world-rest-api
+    version: v1
+  name: hello-world-rest-api
+  namespace: default
+
+spec:
+  replicas: 3
+  minReadySeconds: 45 #means give the container some time to come up before you send the requests
+  selector: ##how  a pod is mapped to a deployment
+    matchLabels: #used to match the pod to the deployment
+      app: hello-world-rest-api
+      version: v1
+  strategy:
+    rollingUpate:
+      maxSurge: 25% #how many new instance can you create at each point in time
+      maxUnavailable: 25% #how many of the instance can be unavailable at every time
+    type: RollingUpdate #you want to update certain instance at a certain time
+  template:
+    metadata:
+      labels: #####
+        app: hello-world-rest-api
+
+  spec:
+    containers:
+      - image: ikenna/hello-world-resp-api.0.0.1
+        imagePullPolicy: ifNotPresent
+        name: hello-world-rest-api
+    restartPolicy: Always
+    terminationGracePeriodSeconds: 30
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels: #####
+    app: hello-world-rest-api
+  name: hello-world-rest-api
+  namespace: default
+
+spec:
+  ports:
+    - nodePort: 32208 #used to specify the port on which a pod or sets of port are listening
+      port: 8080
+      protocol: TCP
+      targetPort: 8080 #used to expose a service externally
+  selector: #helps to map to the pod
+    app: hello-world-rest-api
+  sessionAffinity: None #for web apps, sessionAffinity is true
+  type: LoadBalancer
+
+  #readinessprobe is useful at the start, ands helps you find out if the container is ready to accept request
+#livenessprobe is used to check if the container is in a deadlock and needs to restarted etc

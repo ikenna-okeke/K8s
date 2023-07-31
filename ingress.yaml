@@ -1,0 +1,25 @@
+#ingresss routes the requests to the appropriate microservices based on the url
+#with a NodePort, a port is expossed on every node
+#node port does not have an external url
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: gateway-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  # labels:
+  #   name: myingress
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /currency-exchange/*
+        backend:
+          serviceName: currency-exchange #connects this ingress to the currency echange service created 
+          servicePort: 8000 
+      - path: /currency-conversion/*
+          backend: 
+            serviceName: currency-conversion
+              servicePort: 8100 
+
